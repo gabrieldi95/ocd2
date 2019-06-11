@@ -12,6 +12,8 @@ public class Bloco {
 
     int pos;
 
-    Bloco prox;
+    public String toString() {
+        return "Valor: " + valor + " Posicao: " + pos;
+    }
 
 }
