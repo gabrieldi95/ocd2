@@ -1,0 +1,2 @@
+MOV AX, [100]
+SUB BX, CX
