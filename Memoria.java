@@ -7,13 +7,35 @@ public class Memoria extends LinkedList<Bloco> {
 
     void insere(int valor, int pos){
 
-        // Busca primeiro se ejá existe um bloco nessa posição e coloca no lugar dele
+        // Busca primeiro se já existe um bloco nessa posição e coloca no lugar dele
         for(Bloco e : this){
             if(e.pos == pos) {
                 set(indexOf(e), new Bloco(valor, pos));
             }
         }
         // Se não tiver insere no final da lista
+        add(new Bloco(valor, pos));
+
+    }
+
+    void insere_semPos(int valor){
+        // Busca uma posicao disponível na memória e aloca
+
+        int pos = (int) (Math.random() * 101);
+        boolean ocupado = true;
+
+        while(ocupado){
+            pos = (int) (Math.random() * 101);
+            for(Bloco e : this){
+                if(e.pos == pos) {
+                    ocupado = true;
+                    break;
+                }
+                else {
+                    ocupado = false;
+                }
+            }
+        }
         add(new Bloco(valor, pos));
 
     }
