@@ -11,7 +11,7 @@
         0000 00 00 00000000
      32.784 16392 8192 4096         2048 1024     512 256    128 64 32 16 8 4 2 1
  */
-
+ 
 import java.io.FileReader;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Scanner;
 
 public class UC {
 
@@ -50,7 +51,9 @@ public class UC {
     static int flag_mem;
     static int flag_ula;
     static boolean flag_const = false;
-
+    static String instr_atual = null;
+    static Scanner sc = null;
+    static boolean _wait = false; 
     static Memoria mem = new Memoria();
 
     public static void main(String[] args){
@@ -72,15 +75,60 @@ public class UC {
 //        armazena_codigo("/Users/gabriel.arruda@ibm.com/Desktop/Faculdade/OCD/EP2/src/codigo.txt", mem);
 //        mem.print();
 
-        executa_codigo("/Users/gabriel.arruda@ibm.com/Desktop/Faculdade/OCD/EP2/src/codigo.txt");
+        executa_codigo("./codigo.txt");
     }
-
-
-
-
-
-
+    
+    static void next_instr()
+    {
+        
+    }
+    
+    static void print(Object o)
+    {
+        System.out.print(o);
+    }
+    
+    static void printl(Object o)
+    {
+        System.out.println(o);
+    }
+    
+    static String inthex(int i)
+    {
+        return Integer.toHexString(i);
+    }
+    
+    static String intbin(int i)
+    {
+        return Integer.toBinaryString(i);
+    }
+    
+    static void printState()
+    {
+        printl("////////////////////////////////////////////////////////////////////////////"); 
+        print("AX: " + inthex(AX) + "; ");
+        print("BX: " + inthex(BX) + "; ");
+        print("CX: " + inthex(CX) + "; ");
+        printl("DX: " + inthex(DX) + "; ");
+        print("MAR: " + inthex(MAR) + "; "); 
+        print("MBR: " + inthex(MBR) + "; "); 
+        print("PC: " + inthex(PC) + "; ");
+        printl("AC: " + inthex(AC) + "; ");
+        print("Barramento: " + inthex(barramento) + "; ");
+        print("Memoria: " + inthex(memoria) + "; ");
+        printl("Barramento mem: " + inthex(barr_mem) + "; ");
+        print("flags mem: " + intbin(flag_mem) + "; ");
+        print("flags ULA: " + intbin(flag_ula) + "; ");
+        printl("instr_atual: " + instr_atual + "; ");
+        if(!_wait)
+        {
+            printl("Pressione enter para a proxima instrucao do ciclo.");
+            sc.nextLine();
+        }
+    }
+    
     static void executa_codigo(String codigo){
+        sc = new Scanner(System.in);
         ArrayList<String> programa = le_codigo(codigo);
         int pos = 1000;
         for (String comando : programa) {
@@ -98,7 +146,6 @@ public class UC {
         }
     }
 
-
     /**
      * Executa o ciclo que esta na UC, seja de busca ou execução
      */
@@ -108,8 +155,8 @@ public class UC {
          */
         flag_ula = 0;
         for(int i=0; i<UC.length; i++){
+            printState();
             for (int j = 0; j < 4; j++) {
-
                 int flag = UC[i][4];
                 flag_ula = (flag_ula > 0) ? flag_ula : UC[i][5];
                 switch (UC[i][j]){
@@ -215,7 +262,8 @@ public class UC {
                 }
             }
             try {
-                Thread.sleep(1000);
+                if(_wait)
+                    Thread.sleep(1000);
             }catch (Exception e){
 
             }
@@ -364,6 +412,7 @@ public class UC {
      */
     static int compila(String comando){
 
+        instr_atual = comando;
         int result = 0;
         int constante = 0;
 
