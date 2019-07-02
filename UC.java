@@ -51,9 +51,13 @@ public class UC {
     static int flag_mem;
     static int flag_ula;
     static boolean flag_const = false;
-    static String instr_atual = null;
+    
+    static String instr_asm = null;
+    static String instr_mic = null;
+    
     static Scanner sc = null;
     static boolean _wait = false; 
+    
     static Memoria mem = new Memoria();
 
     public static void main(String[] args){
@@ -78,11 +82,6 @@ public class UC {
         executa_codigo("./codigo.txt");
     }
     
-    static void next_instr()
-    {
-        
-    }
-    
     static void print(Object o)
     {
         System.out.print(o);
@@ -93,14 +92,24 @@ public class UC {
         System.out.println(o);
     }
     
+    static String inthex(int i, int nhex)
+    {
+        return String.format("%0" + nhex + "X", i);
+    }
+    
     static String inthex(int i)
     {
-        return Integer.toHexString(i);
+        return inthex(i, 4);
+    }
+    
+    static String intbin(int i, int nbits)
+    {
+        return String.format("%" + nbits + "s", Integer.toBinaryString(i)).replace(' ', '0');
     }
     
     static String intbin(int i)
     {
-        return Integer.toBinaryString(i);
+        return intbin(i, 16);
     }
     
     static void printState()
@@ -113,13 +122,13 @@ public class UC {
         print("MAR: " + inthex(MAR) + "; "); 
         print("MBR: " + inthex(MBR) + "; "); 
         print("PC: " + inthex(PC) + "; ");
-        printl("AC: " + inthex(AC) + "; ");
+        printl("IR: " + inthex(IR) + "; ");
         print("Barramento: " + inthex(barramento) + "; ");
-        print("Memoria: " + inthex(memoria) + "; ");
-        printl("Barramento mem: " + inthex(barr_mem) + "; ");
-        print("flags mem: " + intbin(flag_mem) + "; ");
-        print("flags ULA: " + intbin(flag_ula) + "; ");
-        printl("instr_atual: " + instr_atual + "; ");
+        printl("Barramento_mem: " + inthex(barr_mem) + "; ");
+        print("flags_mem: " + intbin(flag_mem, 5) + "; ");
+        printl("flags_ULA: " + intbin(flag_ula, 5) + "; ");
+        print("instr_asm: " + instr_asm + "; ");
+        printl("instr_mic: " + instr_mic + "; ");
         if(!_wait)
         {
             printl("Pressione enter para a proxima instrucao do ciclo.");
@@ -132,7 +141,8 @@ public class UC {
         ArrayList<String> programa = le_codigo(codigo);
         int pos = 1000;
         for (String comando : programa) {
-            mem.insere(compila(comando), pos);
+            printl(comando);
+            mem.insere(compila(comando), pos, comando);
             pos++;
         }
 
@@ -155,6 +165,13 @@ public class UC {
          */
         flag_ula = 0;
         for(int i=0; i<UC.length; i++){
+            instr_mic = "";
+            
+            for(int j = 0; j < UC[i].length; j++)
+            {
+                instr_mic += intbin(UC[i][j], 5);
+            }
+            
             printState();
             for (int j = 0; j < 4; j++) {
                 int flag = UC[i][4];
@@ -249,7 +266,7 @@ public class UC {
                                 memoria = barr_mem;
                                 break;
                             case 3:
-                                mem.insere(memoria, barr_mem);
+                                mem.insere(memoria, barr_mem, null);
                                 break;
                         }
                         break;
@@ -412,7 +429,6 @@ public class UC {
      */
     static int compila(String comando){
 
-        instr_atual = comando;
         int result = 0;
         int constante = 0;
 
