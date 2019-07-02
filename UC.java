@@ -147,6 +147,7 @@ public class UC {
         }
 
         while(PC != pos){
+            instr_asm = "(ciclo de busca)";
             UC = ciclo_busca();
             executa_ciclo();
             le_comando(IR);
@@ -169,7 +170,10 @@ public class UC {
             
             for(int j = 0; j < UC[i].length; j++)
             {
-                instr_mic += intbin(UC[i][j], 5);
+                String z = UC[i][j] + "";
+                if(z.length() == 1)
+                    z = "0" + z;                
+                instr_mic += z;
             }
             
             printState();
@@ -273,7 +277,15 @@ public class UC {
                     case 26:
                         switch (flag){
                             case 2:
-                                barr_mem = mem.getMem(memoria);
+                                Bloco b = mem.getMem(memoria);
+                                if(b == null)
+                                    barr_mem = 0;
+                                else
+                                {
+                                    barr_mem = b.valor;
+                                    if(b.asm != null)
+                                        instr_asm = b.asm;
+                                }
                         }
                         break;
                 }

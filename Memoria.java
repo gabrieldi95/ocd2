@@ -40,9 +40,9 @@ public class Memoria extends LinkedList<Bloco> {
 
     }
 
-    int getMem(int pos){
+    Bloco getMem(int pos){
         for (Bloco e : this)
-            if(e.pos == pos) return e.valor;
+            if(e.pos == pos) return e;
 
         // Se não achar um bloco com essa posição joga uma exceção
         try {
@@ -50,7 +50,7 @@ public class Memoria extends LinkedList<Bloco> {
         } catch (InvalidPositionException e) {
             e.printStackTrace();
         }
-        return 0;
+        return null;
     }
 
     void print() {
